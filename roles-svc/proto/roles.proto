@@ -1,0 +1,76 @@
+syntax = "proto3";
+
+package roles;
+
+import "google/api/annotations.proto";
+
+service RolesService {
+    rpc CreateRole(Role) returns(Response) {
+        option(google.api.http) = {
+            post: "/v1/roles"
+            body: "*"
+        };
+    }
+    rpc GetAll(RequestQuery) returns(ResponseList) {
+        option(google.api.http) = {
+            get: "/v1/roles"
+        };
+    }
+    rpc GetRole(Role) returns(ResponseRole) {
+        option(google.api.http) = {
+            get: "/v1/roles/{id}"
+        };
+    }
+    rpc UpdateRole(Role) returns(Response) {
+        option(google.api.http) = {
+            patch: "/v1/roles/{id}"
+            body: "*"
+        };
+    }
+    rpc DeleteRole(Role) returns(Response) {
+        option(google.api.http) = {
+            delete: "/v1/roles/{id}"
+        };
+    }
+}
+
+message Role {
+    string id = 1;
+    string client_id = 2;
+    string title = 3;
+    string role_type = 4;
+    string created_at = 5;
+    string updated_at = 6;
+}
+
+message Response {
+    string result = 1;
+    map < string, string > error = 2;
+    map < string, string > data = 3;
+}
+
+message ResponseRole {
+    string result = 1;
+    map < string, string > error = 2;
+    Role data = 3;
+}
+
+message RequestQuery {
+    string offset = 1;
+    string limit = 2;
+    string orderby = 3;
+    string sort = 4;
+}
+
+message ResponseList {
+    string result = 1;
+    map < string, string > error = 2;
+    RoleList data = 3;
+}
+
+message RoleList {
+    string offset = 1;
+    string limit = 2;
+    string count = 3;
+    repeated Role list = 4;
+}

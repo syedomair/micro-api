@@ -1,0 +1,85 @@
+
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: subscrp-depl
+  labels:
+    app: subscrp
+spec:
+  selector:
+    matchLabels:
+      app: subscrp
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: subscrp
+    spec:
+      volumes:
+      - name: "client-tls-certs"
+        secret:
+          secretName: "nats-client-tls-certs"
+      containers:
+      - name: subscrp-svc
+        command: ["/subscrp-svc", "-s", "nats://nats-cluster.default.svc.cluster.local:4222", "-cacert", '/etc/nats-client-tls-certs/ca.pem', '-cert', '/etc/nats-client-tls-certs/client.pem', '-key', '/etc/nats-client-tls-certs/client-key.pem']
+        image: 755455355830.dkr.ecr.us-east-2.amazonaws.com/subscrp-svc
+        env:
+        - name: NATS_SERVER
+          value: "nats://nats-cluster.default.svc.cluster.local:4222"
+        - name: NATS_CACERT
+          value: "/etc/nats-client-tls-certs/ca.pem"
+        - name: NATS_CERT
+          value: "/etc/nats-client-tls-certs/client.pem"
+        - name: NATS_KEY
+          value: "/etc/nats-client-tls-certs/client-key.pem"
+        - name: DB_SERVER
+          value: "meem-db-instance.c8qfd5ux55rw.us-east-2.rds.amazonaws.com"
+        - name: SECRET_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: db-secret
+              key: username
+        - name: SECRET_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: db-secret
+              key: password
+        - name: AWS_SECRET_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: db-secret
+              key: aws_secret_access_key
+        - name: AWS_ACCESS_KEY_ID
+          valueFrom:
+            secretKeyRef:
+              name: db-secret
+              key: aws_access_key_id
+        - name: AWS_REGION
+          valueFrom:
+            secretKeyRef:
+              name: db-secret
+              key: aws_region
+        #ports:
+        #- containerPort: 1883
+        #imagePullPolicy: Always
+        imagePullPolicy: Never
+        ports:
+        - name: subscrp-srvc
+          containerPort: 8180
+        volumeMounts:
+        - name: "client-tls-certs"
+          mountPath: "/etc/nats-client-tls-certs/"
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: subscrp-srvc
+spec:
+  type: NodePort
+  selector:
+    app: subscrp
+  ports:
+  - port: 8180
+    targetPort: subscrp-svc

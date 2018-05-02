@@ -1,0 +1,92 @@
+syntax = "proto3";
+
+package users;
+
+import "google/api/annotations.proto";
+
+service UsersService {
+    rpc GetAll(RequestQuery) returns(ResponseList) {
+        option(google.api.http) = {
+            get: "/v1/users"
+        };
+    }
+    rpc GetUser(User) returns(ResponseUser) {
+        option(google.api.http) = {
+            get: "/v1/users/{id}"
+        };
+    }
+    rpc UpdateUser(User) returns(Response) {
+        option(google.api.http) = {
+            patch: "/v1/users/{id}"
+            body: "*"
+        };
+    }
+    rpc DeleteUser(User) returns(Response) {
+        option(google.api.http) = {
+            delete: "/v1/users/{id}"
+        };
+    }
+}
+
+message User {
+    string id = 1;
+    string client_id = 2;
+    string first_name = 3;
+    string last_name = 4;
+    string email = 5;
+    string password = 6 ;
+    string is_admin = 7;
+    string created_at = 8;
+    string updated_at = 9;
+}
+
+message UserShorten {
+    string id = 1;
+    string client_id = 2;
+    string first_name = 3;
+    string last_name = 4;
+    string email = 5;
+    string is_admin = 6;
+    string created_at = 7;
+    string updated_at = 8;
+}
+
+message Response {
+    string result = 1;
+    map < string, string > error = 2;
+    map < string, string > data = 3;
+}
+
+message ResponseUser {
+    string result = 1;
+    map < string, string > error = 2;
+    UserShorten data = 3;
+}
+
+message RequestQuery {
+    string offset = 1;
+    string limit = 2;
+    string orderby = 3;
+    string sort = 4;
+}
+
+message ResponseList {
+    string result = 1;
+    map < string, string > error = 2;
+    UserList data = 3;
+}
+
+message UserList {
+    string offset = 1;
+    string limit = 2;
+    string count = 3;
+    repeated UserShorten list = 4;
+}
+
+message UserMessage {
+    string user_id = 1;
+    string client_id = 2;
+    string first_name = 3;
+    string last_name = 4;
+    string email = 5;
+}
