@@ -27,7 +27,6 @@ message BatchTask {
     string client_id = 2;
     string api_name = 3;
     string status = 4;
-    string s3_url = 5;
     string created_at = 6;
     string completed_at = 7;
 }
