@@ -13,7 +13,7 @@ for d in */ ; do
     rm Gopkg.lock
     rm Gopkg.toml
     rm -rf vendor
-    #dep init && dep ensure
+    dep init && dep ensure
     cd ..
   fi
 done
