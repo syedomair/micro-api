@@ -118,7 +118,7 @@ func main() {
 		jsonResult, _ := json.Marshal(bodyInterface["result"])
 		fmt.Println("---------------------------------------------------------------------------")
 		fmt.Println(strconv.Itoa(i) + " " + testCase.method + " " + string(testCase.url) + " " + testCase.path + " " + testCase.requestBody)
-		fmt.Println(string(body))
+		//fmt.Println(string(body))
 		fmt.Println(string(jsonData))
 		//Green Color output
 		fmt.Println("\033[32m" + string(jsonResult) + "\033[39m")

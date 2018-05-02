@@ -30,7 +30,7 @@ func (repo *BatchTaskRepository) Create(apiName string, clientId string) (*pb.Ba
 		ApiName:     apiName,
 		Status:      common.BATCH_TASK_PENDING,
 		CreatedAt:   time.Now().Format(time.RFC3339),
-		CompletedAt: "1111-11-11T10:00:00-05:00"}
+		CompletedAt: "1900-01-01 00:00:00"}
 
 	if err := repo.db.Create(batchTask).Error; err != nil {
 		return nil, err
